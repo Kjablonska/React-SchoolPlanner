@@ -1,4 +1,5 @@
 ﻿import React from 'react';
+import ReactDOM from 'react-dom';
 // import { Link } from 'react-router-dom'
 
 var columnsHeaders = [
@@ -21,8 +22,6 @@ var columnsHeaders = [
     ,"15:35-16:20"
     ,"16:30-17:15"
   ];
-
-
 // This component is created as a class because there is a need to remeber the selected room, as a state.
 
 class TimeTable extends React.Component {
@@ -31,26 +30,37 @@ class TimeTable extends React.Component {
 
       this.state = {
         selectedRoom: '',
-        roomsList: []
+        roomsList: [],
+        activities: []
       };
 
-      this.init()
     }
 
-    async init() {
+    async componentDidMount() {
       await this.getRoomOptions();
+
+      if (this.state.roomsList.length > 0) {
+        this.state.selectedRoom = this.state.roomsList[0];
+      }
+
+      await this.getRoomActivities();
     }
 
     async getRoomOptions() {
-      return fetch('/dictionaryList?dictionary=rooms')
+      return await fetch(`/dictionaryList?dictionary=rooms`)
       .then(response => response.json())
-      .then(data => this.setState({roomsList: data})) //this.setState = ({roomsList: data}))
+      .then(data => this.setState({roomsList: data})) //this.setState = ({roomsList: data}));
+    }
+
+    async getRoomActivities() {
+      return await fetch(`/activities?room=${this.state.selectedRoom}`)
+      .then(response => response.json())
+      .then(data => this.setState({activities: data})) //this.setState = ({roomsList: data}))
     }
 
     generateRoomSelection = () => {
       return (
       <select name="select-room" value={this.state.selectedRoom} onChange={e => this.setState({ selectedRoom: e.target.value })} >
-        {console.log(this.state.roomsList)}
         {(this.state.roomsList).map(r => <option key={r} value={r}>{r}</option>)}
       </select>
       )
@@ -73,14 +83,25 @@ class TimeTable extends React.Component {
           var data;
           if (col === 0) {
             data = rowsHeaders[row];
+            columns.push (
+              <td key={col} className="col">
+                  {data}
+              </td>
+            );
           } else {
-            data = 0;
+            data = "X"
+            for(const [key, value] of Object.entries(this.state.activities)) {
+              if (value["slot"] === row && value["day"] === columnsHeaders[col]) {
+                data = value["group"];
+              }
+            }
+
+            columns.push (
+              <td key={col} className="col">
+                  <button>{data}</button>
+              </td>
+            );
           }
-          columns.push (
-            <td key={col} className="col">
-                {data}
-            </td>
-          );
         }
         rows.push (
           <tr key={row} className="row">
@@ -92,10 +113,9 @@ class TimeTable extends React.Component {
       return rows;
     }
 
-
     render() {
       return (
-        <div>
+        <div id = 'root'>
         <label>Room</label>
           {this.generateRoomSelection()}
           <h3 id='title'>SchoolData</h3>
@@ -112,4 +132,7 @@ class TimeTable extends React.Component {
     }
 
 }
+
+
+ReactDOM.render(<TimeTable />, document.getElementById('root'));
 export default TimeTable;
