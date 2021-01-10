@@ -1,6 +1,9 @@
 ﻿import React from 'react';
-import ReactDOM from 'react-dom';
-// import { Link } from 'react-router-dom'
+// import ReactDOM from 'react-dom';
+import { BrowserRouter, Link, Route, useHistory } from "react-router-dom";
+import { Table } from 'reactstrap';
+
+import MainComponent from './ActivityDetailComponent';
 
 var columnsHeaders = [
     "#"
@@ -40,7 +43,7 @@ class TimeTable extends React.Component {
 
       await this.getRoomOptions();
 
-      if (this.state.roomsList.length > 0 && this.state.selectedRoom != ' ') {
+      if (this.state.roomsList.length > 0 && this.state.selectedRoom !== ' ') {
         this.state.selectedRoom = this.state.roomsList[0];
       }
 
@@ -73,6 +76,15 @@ class TimeTable extends React.Component {
       )
     }
 
+    goToActivityDetails(row, col) {
+        let params = {
+          slot: {row},
+          day: {col}
+        }
+
+        return { pathname: "activityDetail", state: {params}};
+    }
+
     changeRoom(newRoom) {
       this.setState({
         selectedRoom: newRoom
@@ -90,6 +102,7 @@ class TimeTable extends React.Component {
     }
 
     generateTableData() {
+
       let rows = [];
       for (var row = 0; row < rowsHeaders.length; row++) {
         let columns = [];
@@ -112,7 +125,9 @@ class TimeTable extends React.Component {
 
             columns.push (
               <td key={col} className="col">
-                  <button>{data}</button>
+                  <Link to= {this.goToActivityDetails({row}, {col})} className="btn btn-primary">
+                    <button>{data}</button>
+                  </Link>
               </td>
             );
           }
@@ -148,5 +163,4 @@ class TimeTable extends React.Component {
 }
 
 
-ReactDOM.render(<TimeTable />, document.getElementById('root'));
 export default TimeTable;
