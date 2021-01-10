@@ -37,13 +37,20 @@ class TimeTable extends React.Component {
     }
 
     async componentDidMount() {
+
       await this.getRoomOptions();
 
-      if (this.state.roomsList.length > 0) {
+      if (this.state.roomsList.length > 0 && this.state.selectedRoom != ' ') {
         this.state.selectedRoom = this.state.roomsList[0];
       }
 
       await this.getRoomActivities();
+    }
+
+    componentWillUnmount() {
+      this.setState = (state,callback)=>{
+        return;
+      };
     }
 
     async getRoomOptions() {
@@ -60,10 +67,17 @@ class TimeTable extends React.Component {
 
     generateRoomSelection = () => {
       return (
-      <select name="select-room" value={this.state.selectedRoom} onChange={e => this.setState({ selectedRoom: e.target.value })} >
+      <select name="select-room" value={this.state.selectedRoom} onChange={e => this.changeRoom(e.target.value)} >
         {(this.state.roomsList).map(r => <option key={r} value={r}>{r}</option>)}
       </select>
       )
+    }
+
+    changeRoom(newRoom) {
+      this.setState({
+        selectedRoom: newRoom
+      })
+      this.getRoomActivities();
     }
 
     generateColumns() {
