@@ -5,7 +5,7 @@
             "day": "Monday",
             "group": "1a",
             "room": "110",
-            "slot": 1,
+            "slot": "8:55-9:40",
             "teacher": "kowalski"
         },
         {
@@ -13,7 +13,7 @@
             "day": "Friday",
             "group": "1c",
             "room": "121",
-            "slot": 3,
+            "slot": "8:55-9:40",
             "teacher": "nowak"
         },
         {
@@ -21,7 +21,7 @@
             "day": "Friday",
             "group": "2b",
             "room": "110",
-            "slot": 4,
+            "slot": "8:55-9:40",
             "teacher": "may"
         },
         {
@@ -29,7 +29,7 @@
             "day": "Wednesday",
             "group": "4b",
             "room": "120",
-            "slot": 0,
+            "slot": "8:55-9:40",
             "teacher": "hammond"
         },
         {
@@ -37,7 +37,7 @@
             "day": "Wednesday",
             "group": "3a",
             "room": "111",
-            "slot": 4,
+            "slot": "8:55-9:40",
             "teacher": "atkinson"
         }
     ],

@@ -1,3 +1,4 @@
+const { time } = require('console');
 const express = require('express');
 const app = express(); // create express app
 
@@ -7,6 +8,10 @@ app.get('/dictionaryList', async (req, res) => {
 
 app.get('/activities', async(req, res) => {
     res.json(await getRoomActivities(req.query.room));
+})
+
+app.get('/activityDetail', async(req, res) => {
+    res.json(await getActivityDetail(req.query.room, req.query.slot, req.query.day));
 })
 
 async function getDictionaryData(dictionary) {
@@ -21,6 +26,22 @@ async function getRoomActivities(roomName) {
     return await fs.readFile('./data.json', 'utf8')
     .then(x => JSON.parse(x)["activities"].filter(item => item.room.indexOf(roomName) > -1) || "missing key")
     .catch(e => e)
+}
+
+async function getActivities() {
+    const fs = require('fs').promises;
+    return await fs.readFile('./data.json', 'utf8')
+    .then(x => JSON.parse(x)["activities"])
+    .catch(e => e)
+}
+
+async function getActivityDetail(roomName, slot, day) {
+    const act = await getActivities();
+    for(const item of act) {
+        if (item.room === roomName && item.day === day && item.slot === slot) {
+            return item;
+        }
+    }
 }
 
 // start express server on port 5000
