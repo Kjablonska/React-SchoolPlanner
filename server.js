@@ -14,6 +14,10 @@ app.get('/activityDetail', async(req, res) => {
     res.json(await getActivityDetail(req.query.room, req.query.slot, req.query.day));
 })
 
+app.post('editActivity', async(req, res) => {
+    editAcivity(req.query.room, req.query.slot, req.query.day, req.query.group, req.query.class, req.query.teacher);
+})
+
 async function getDictionaryData(dictionary) {
     const fs = require('fs').promises;
     return await fs.readFile('./data.json', 'utf8')
@@ -40,6 +44,18 @@ async function getActivityDetail(roomName, slot, day) {
     for(const item of act) {
         if (item.room === roomName && item.day === day && item.slot === slot) {
             return item;
+        }
+    }
+}
+
+function editAcivity(roomName, slot, day, group, clas, teacher) {
+    const act = await getActivities();
+    for (const item of act) {
+        if (item.room === roomName && item.day === day && item.slot === slot) {
+            item.group = group;
+            item.class = clas;
+            item.teacher = teacher;
+            return;
         }
     }
 }

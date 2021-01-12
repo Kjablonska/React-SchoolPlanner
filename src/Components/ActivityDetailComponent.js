@@ -1,82 +1,96 @@
 import React from 'react';
+import { Link  } from "react-router-dom";
 
 function Activity(props) {
-    const [g, setGroups] = React.useState(null);
-    const [classes, setClasses] = React.useState(null);
-    const [teachers, setTeachers] = React.useState(null);
-    const groups =  ['1a', '2b'];
+    const [groupsList, setGroups] = React.useState([]);
+    const [classesList, setClasses] = React.useState([]);
+    const [teachersList, setTeachers] = React.useState([]);
 
-    React.useEffect(async () => {
-        await fetch(`/dictionaryList?dictionary=groups`)
-          .then(response => response.json())
-          .then(data => {
-            setGroups(data);
-          });
-      }, []);
+    React.useEffect(() => {
+        async function fetchGroupsList() {
+            let response = await fetch(`/dictionaryList?dictionary=groups`)
+            response = await response.json()
+            setGroups(response)
+        }
 
-    console.log(groups);
+        async function fetchClassesList() {
+            let response = await fetch(`/dictionaryList?dictionary=classes`)
+            response = await response.json()
+            setClasses(response)
+        }
 
-    async function getGroupsOptions() {
-        return await fetch(`/dictionaryList?dictionary=groups`)
-        .then(response => response.json())
-    }
+        async function fetchTeachersList() {
+            let response = await fetch(`/dictionaryList?dictionary=teachers`)
+            response = await response.json()
+            setTeachers(response)
+        }
 
-    async function getClassesOptions() {
-        return await fetch(`/dictionaryList?dictionary=classes`)
-        .then(response => response.json())
-    }
-
-    async function getTeachersOptions() {
-        return await fetch(`/dictionaryList?dictionary=teachers`)
-        .then(response => response.json())
-    }
-
-    async function getActivityDetails() {
-        return await fetch(`activityDetail?room=${props.location.state.room}&day=${props.location.state.day}&slot=${props.location.state.slot}`)
-        .then(response => response.json())
-    }
+        fetchGroupsList();
+        fetchClassesList();
+        fetchTeachersList();
+    }, [])
 
     return (
+        <div>
         <form>
         <table>
             <tr>
                 <td>Room</td>
-                <td>{props.location.state.room}</td>
+                <td>
+                    <select name="room">
+                        <option>{props.location.state.room}</option>
+                    </select>
+                </td>
             </tr>
             <tr>
                 <td>Slot</td>
-                <td>{props.location.state.row}</td>
+                <td>
+                    <select name="slot">
+                        <option>{props.location.state.row}</option>
+                    </select>
+                </td>
             </tr>
             <tr>
                 <td>Day</td>
-                <td>{props.location.state.col}</td>
+                <td>
+                    <select name="day">
+                        <option>{props.location.state.col}</option>
+                    </select>
+                </td>
             </tr>
             <tr>
                 <td>Group</td>
                 <td>
-                    <select name="select-group">
-                        {groups.map(r => <option key={r} value={r}>{r}</option>)}
+                    <select name="group">
+                        {groupsList.map(r => <option key={r} value={r}>{r}</option>)}
                     </select>
                 </td>
             </tr>
             <tr>
                 <td>Class</td>
                 <td>
-                    <select name="select-class">
-                        {groups.map(r => <option key={r} value={r}>{r}</option>)}
+                    <select name="class">
+                        {classesList.map(r => <option key={r} value={r}>{r}</option>)}
                     </select>
                 </td>
             </tr>
             <tr>
                 <td>Teacher</td>
                 <td>
-                    <select name="select-teacher" >
-                        {groups.map(r => <option key={r} value={r}>{r}</option>)}
+                    <select name="teacher" >
+                        {teachersList.map(r => <option key={r} value={r}>{r}</option>)}
                     </select>
                 </td>
             </tr>
         </table>
+        <input type="submit"></input>
         </form>
+        <div>
+            <Link to = {this.goToTimeTable()} className="btn btn-primary">
+                <button>Cancel</button>
+            </Link>
+        </div>
+        </div>
     )
 }
 

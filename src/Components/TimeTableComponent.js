@@ -1,5 +1,4 @@
 ﻿import React from 'react';
-// import ReactDOM from 'react-dom';
 import { Link  } from "react-router-dom";
 import { Table } from 'reactstrap';
 
@@ -123,7 +122,7 @@ class TimeTable extends React.Component {
 
             columns.push (
               <td key className="col">
-                  <Link to= {this.goToActivityDetails(row, col)} className="btn btn-primary">
+                  <Link to = {this.goToActivityDetails(row, col)} className="btn btn-primary">
                     <button>{data}</button>
                   </Link>
               </td>
