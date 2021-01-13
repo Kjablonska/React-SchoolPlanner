@@ -30,32 +30,31 @@ function Activity(props) {
         fetchTeachersList();
     }, [])
 
+    const goToTimeTable = () => {
+        let room = props.location.state.room;
+        return { pathname: "/", state: {room}}
+    }
+
     return (
         <div>
-        <form>
+        <form action={goToTimeTable}>
         <table>
             <tr>
                 <td>Room</td>
                 <td>
-                    <select name="room">
-                        <option>{props.location.state.room}</option>
-                    </select>
+                    <input name="room" value = {props.location.state.room} readonly/>
                 </td>
             </tr>
             <tr>
                 <td>Slot</td>
                 <td>
-                    <select name="slot">
-                        <option>{props.location.state.row}</option>
-                    </select>
+                    <input name="slot" value = {props.location.state.row} readonly/>
                 </td>
             </tr>
             <tr>
                 <td>Day</td>
                 <td>
-                    <select name="day">
-                        <option>{props.location.state.col}</option>
-                    </select>
+                    <input name="day" value = {props.location.state.col} readonly/>
                 </td>
             </tr>
             <tr>
@@ -86,7 +85,7 @@ function Activity(props) {
         <input type="submit"></input>
         </form>
         <div>
-            <Link to = {this.goToTimeTable()} className="btn btn-primary">
+            <Link to = {goToTimeTable()} className="btn btn-primary">
                 <button>Cancel</button>
             </Link>
         </div>

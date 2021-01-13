@@ -48,7 +48,7 @@ async function getActivityDetail(roomName, slot, day) {
     }
 }
 
-function editAcivity(roomName, slot, day, group, clas, teacher) {
+async function editAcivity(roomName, slot, day, group, clas, teacher) {
     const act = await getActivities();
     for (const item of act) {
         if (item.room === roomName && item.day === day && item.slot === slot) {
