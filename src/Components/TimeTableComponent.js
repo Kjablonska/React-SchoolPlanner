@@ -22,63 +22,53 @@ var columnsHeaders = [
     ,"16:30-17:15"
   ];
 
-class TimeTable extends React.Component {
-    constructor() {
-      super();
+function TimeTable(props) {
+    const [selectedRoom, setSelectedRoom] = React.useState("");
+    const [roomsList, setRooms] = React.useState([]);
+    const [activities, setActivities] = React.useState([]);
+    // console.log("props", props)
 
-      this.state = {
-        selectedRoom: "",
-        roomsList: [],
-        activities: []
-      };
-
-    }
-
-    async componentDidMount() {
-
-      await this.getRoomOptions();
-
-      if (this.state.roomsList.length > 0 && this.state.selectedRoom !== ' ') {
-        this.state.selectedRoom = this.state.roomsList[0];
+    React.useEffect( () => {
+      async function fetchRoomsList() {
+        let response = await fetch(`/dictionaryList?dictionary=rooms`)
+        response = await response.json()
+        setRooms(response)
       }
 
-      await this.getRoomActivities();
+      async function fetchActivities() {
+        let response =  await fetch(`/activities?room=${selectedRoom}`)
+        response = await response.json()
+        setActivities(response)
+      }
+
+      fetchRoomsList();
+
+      if (!roomsList.includes(selectedRoom)) {
+        setSelectedRoom(roomsList[0])
+      }
+
+      console.log(selectedRoom)
+      fetchActivities();
+    }, [selectedRoom])
+
+
+    const changeRoom = (newRoom) => {
+      setSelectedRoom(newRoom);
+    }
+    const goToActivityDetails = (row, col) => {
+      let room = selectedRoom;
+      return { pathname: "activityDetail", state: {room, row, col}}
     }
 
-    componentWillUnmount() {
-      this.setState = (state,callback)=>{
-        return;
-      };
-    }
-
-    async getRoomOptions() {
-      return await fetch(`/dictionaryList?dictionary=rooms`)
-      .then(response => response.json())
-      .then(data => this.setState({roomsList: data}))
-    }
-
-    async getRoomActivities() {
-      return await fetch(`/activities?room=${this.state.selectedRoom}`)
-      .then(response => response.json())
-      .then(data => this.setState({activities: data}))
-    }
-
-    generateRoomSelection = () => {
+    const generateRoomSelection = () => {
       return (
-      <select name="select-room" value={this.state.selectedRoom} onChange={e => this.changeRoom(e.target.value)} >
-        {(this.state.roomsList).map(r => <option key={r} value={r}>{r}</option>)}
+      <select name="select-room" value={selectedRoom} onChange={e => changeRoom(e.target.value)} >
+        {(roomsList).map(r => <option key={r} value={r}>{r}</option>)}
       </select>
       )
     }
 
-    changeRoom(newRoom) {
-      this.setState({
-        selectedRoom: newRoom
-      })
-      this.getRoomActivities();
-    }
-
-    generateColumns() {
+    const generateColumns = () => {
       let columns = [];
       columnsHeaders.forEach(item => {
         columns.push(
@@ -91,12 +81,7 @@ class TimeTable extends React.Component {
       return columns;
     }
 
-    goToActivityDetails(row, col) {
-      let room = this.state.selectedRoom;
-      return { pathname: "activityDetail", state: {room, row, col}}
-    }
-
-    generateTableData() {
+    const generateTableData = () => {
       let rows = [];
       for (const row of rowsHeaders) {
         let columns = [];
@@ -109,7 +94,7 @@ class TimeTable extends React.Component {
             );
           } else {
             data = "X"
-            for(const [key, value] of Object.entries(this.state.activities)) {
+            for(const [key, value] of Object.entries(activities)) {
               if (value["slot"] === row && value["day"] === col) {
                 data = value["group"];
               }
@@ -117,7 +102,7 @@ class TimeTable extends React.Component {
 
             columns.push (
               <td key className="col">
-                  <Link to = {this.goToActivityDetails(row, col)} className="btn btn-primary">
+                  <Link to = {goToActivityDetails(row, col)} className="btn btn-primary">
                     <button>{data}</button>
                   </Link>
               </td>
@@ -134,21 +119,18 @@ class TimeTable extends React.Component {
       return rows;
     }
 
-    render() {
-      return (
+    return (
         <>
         <label>Room</label>
-          {this.generateRoomSelection()}
-          {console.log(this.state.selectedRoom)}
+          {generateRoomSelection()}
             <table>
               <tbody>
-                <tr>{this.generateColumns()}</tr>
-                {this.generateTableData()}
+                <tr>{generateColumns()}</tr>
+                {generateTableData()}
               </tbody>
             </table>
         </>
-      );
-    }
+    );
 
 }
 

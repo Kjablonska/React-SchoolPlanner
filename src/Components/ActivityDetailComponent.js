@@ -39,19 +39,13 @@ function Activity(props) {
 
     const goToTimeTable = () => {
         let room = props.location.state.room;
+        console.log("det", {room});
         return { pathname: "/", state: {room}}
-    }
-
-    const checkActivityEmpty = () => {
-        return activity === "" ?
-            <Link to = {goToTimeTable()} className="btn btn-primary">
-                <button>Unassign</button>
-            </Link>
-        : <div></div>
     }
 
     return (
         <div>
+            {props.location.state.room}
         <form>
         <table>
             <tr>
@@ -103,7 +97,11 @@ function Activity(props) {
             <Link to = {goToTimeTable()} className="btn btn-primary">
                 <button>Cancel</button>
             </Link>
-            {checkActivityEmpty}
+            {activity !== "" &&
+                <Link to = {goToTimeTable()} className="btn btn-primary">
+                    <button>Unassign</button>
+                </Link>
+            }
         </div>
         </div>
     )

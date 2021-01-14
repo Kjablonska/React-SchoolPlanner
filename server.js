@@ -1,4 +1,4 @@
-const { time } = require('console');
+const { time, log } = require('console');
 const express = require('express');
 const app = express(); // create express app
 
@@ -12,6 +12,10 @@ app.get('/activities', async(req, res) => {
 
 app.get('/activityDetail', async(req, res) => {
     res.json(await getActivityDetail(req.query.room, req.query.slot, req.query.day));
+})
+
+app.post('/removeDictionaryEntry', (req, res) => {
+    res.json(removeDictionaryEntry(req.query.dictionary, req.query.entry));
 })
 
 app.post('editActivity', async(req, res) => {
@@ -58,6 +62,26 @@ async function editAcivity(roomName, slot, day, group, clas, teacher) {
             return;
         }
     }
+}
+
+
+// Removing entry of the given dictionary.
+async function removeDictionaryEntry(dictionary, entry) {
+    console.log(entry)
+    const fs = require('fs').promises;
+    var data = await fs.readFile('./data.json', 'utf8')
+    .then(x => JSON.parse(x) || "missing key")
+    .catch(e => e)
+
+    var index = data[dictionary].indexOf(entry);
+    if (index !== -1)
+        data[dictionary].splice(index, 1);
+
+    const jsonContent = JSON.stringify(data);
+    fs.writeFile("./data.json", jsonContent, 'utf8', function (err) {
+        if (err)
+            return console.log(err);
+    });
 }
 
 // start express server on port 5000
