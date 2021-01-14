@@ -7,6 +7,9 @@ function Menu(props) {
     return (
         <div>
             <NavItem>
+                <NavLink tag={Link} className="text-white" to='/'>TimeTable</NavLink>
+            </NavItem>
+            <NavItem>
                 <NavLink tag={Link} className="text-white" to={{pathname:'/editDictionary', state: {dictionary:'classes'}}}>Classes</NavLink>
             </NavItem>
             <NavItem>

@@ -1,6 +1,5 @@
 ﻿import React from 'react';
 import { Link  } from "react-router-dom";
-import { Table } from 'reactstrap';
 
 var columnsHeaders = [
     "#"
@@ -22,14 +21,13 @@ var columnsHeaders = [
     ,"15:35-16:20"
     ,"16:30-17:15"
   ];
-// This component is created as a class because there is a need to remeber the selected room, as a state.
 
 class TimeTable extends React.Component {
     constructor() {
       super();
 
       this.state = {
-        selectedRoom: '',
+        selectedRoom: "",
         roomsList: [],
         activities: []
       };
@@ -99,7 +97,6 @@ class TimeTable extends React.Component {
     }
 
     generateTableData() {
-
       let rows = [];
       for (const row of rowsHeaders) {
         let columns = [];
@@ -108,9 +105,7 @@ class TimeTable extends React.Component {
           if (col === '#') {
             data = row;
             columns.push (
-              <td className="col">
-                  {data}
-              </td>
+              <td className="col">{data}</td>
             );
           } else {
             data = "X"
@@ -141,17 +136,17 @@ class TimeTable extends React.Component {
 
     render() {
       return (
-        <div id = 'root'>
+        <>
         <label>Room</label>
           {this.generateRoomSelection()}
-          <h3 id='title'>SchoolData</h3>
-            <Table striped>
+          {console.log(this.state.selectedRoom)}
+            <table>
               <tbody>
-                {this.generateColumns()}
+                <tr>{this.generateColumns()}</tr>
                 {this.generateTableData()}
               </tbody>
-            </Table>
-        </div>
+            </table>
+        </>
       );
     }
 
