@@ -6,7 +6,30 @@ function EditEntry(props) {
     const saveEntry = async function(event) {
         event.preventDefault();
         var editValue = document.getElementById("entry").value;
+        if (editValue === '') {
+            return props.history.push({pathname: "editDictionary", state: {dictionary:props.location.state.dictionary}});
+        }
 
+        if (props.location.state.entry === '')
+            addEntry(editValue);
+        else
+            editEntry(editValue);
+    }
+
+    const addEntry = async function(editValue) {
+        await fetch(`/addDictionaryEntry`, {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ dictionary: `${props.location.state.dictionary}`, newEntry:`${editValue}`})
+        }).then(() => {
+            props.history.push({pathname: "editDictionary", state: {dictionary:props.location.state.dictionary}});
+        });
+    }
+
+    const editEntry = async function(editValue) {
         await fetch(`/editDictionaryEntry`, {
             method: "POST",
             headers: {
@@ -28,7 +51,6 @@ function EditEntry(props) {
     return (
         <>
             <form onSubmit = {saveEntry}>
-                <label for="fname">Edit entry</label>
                 <br></br>
                 <input type="text" id="entry" defaultValue={props.location.state.entry}></input>
                 {/* <Link to = {cancelEdit} className="btn btn-primary"> */}

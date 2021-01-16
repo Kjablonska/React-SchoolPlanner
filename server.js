@@ -13,11 +13,6 @@ app.get('/dictionaryList', async (req, res) => {
     res.json(await getDictionaryData(req.query.dictionary))
 })
 
-// app.post('/dictionaryList', async (req, res) => {
-//     res.statusCode = 200;
-//     res.json(await getDictionaryData(req.query.dictionary))
-// })
-
 app.get('/activities', async(req, res) => {
     res.json(await getRoomActivities(req.query.room));
 })
@@ -37,8 +32,18 @@ app.post('/editDictionaryEntry', (req, res) => {
     res.json(editDictionaryEntry(req.body.dictionary, req.body.entry, req.body.newEntry));
 })
 
-app.post('editActivity', async(req, res) => {
-    editAcivity(req.query.room, req.query.slot, req.query.day, req.query.group, req.query.class, req.query.teacher);
+app.post('/addDictionaryEntry', (req, res) => {
+    console.log(req.body.dictionary)
+    console.log(req.body.newEntry)
+    res.json(addDictionaryEntry(req.body.dictionary, req.body.newEntry));
+})
+
+app.post('/saveActivity', async(req, res) => {
+    res.json(saveAcivity(req.body.room, req.body.slot, req.body.day, req.body.group, req.body.class, req.body.teacher));
+})
+
+app.post('/unassignEntry', async(req, res) => {
+    res.json(unassignEntry(req.body.room, req.body.slot, req.body.day));
 })
 
 async function getDictionaryData(dictionary) {
@@ -51,7 +56,7 @@ async function getDictionaryData(dictionary) {
 async function getRoomActivities(roomName) {
     const fs = require('fs').promises;
     return await fs.readFile('./data.json', 'utf8')
-    .then(x => JSON.parse(x)["activities"].filter(item => item.room.indexOf(roomName) > -1) || "missing key")
+    .then(x => JSON.parse(x)["activities"].filter(item => item.room.indexOf(roomName) > -1) || [])
     .catch(e => e)
 }
 
@@ -69,25 +74,56 @@ async function getActivityDetail(roomName, slot, day) {
             return item;
         }
     }
+
 }
 
-async function editAcivity(roomName, slot, day, group, clas, teacher) {
-    const act = await getActivities();
-    for (const item of act) {
-        if (item.room === roomName && item.day === day && item.slot === slot) {
-            item.group = group;
-            item.class = clas;
-            item.teacher = teacher;
+async function saveAcivity(room, slot, day, group, clas, teacher) {
+    console.log(room, slot, day);
+    var data = await getJsonData();
+
+    for (const item of data["activities"]) {
+        if (item.room === room && item.day === day && item.slot === slot) {
+            var index = data["activities"].indexOf(item);
+            data["activities"][index].group = group;
+            data["activities"][index].class = clas;
+            data["activities"][index].teacher = teacher;
+            serializeData(data);
             return;
         }
     }
+
+    var item = {
+        "class": clas,
+        "day": day,
+        "group": group,
+        "room": room,
+        "slot": slot,
+        "teacher": teacher
+    };
+    data["activities"].push(item);
+
+    serializeData(data);
+}
+
+async function unassignEntry(room, slot, day) {
+    console.log(room, slot, day);
+    var data = await getJsonData();
+
+    for (const item of data["activities"]) {
+        if (item.room === room && item.day === day && item.slot === slot) {
+            // console.log(data["activities"].indexOf(item))
+            var index = data["activities"].indexOf(item);
+            data["activities"].splice(index, 1);
+            break;
+        }
+    }
+
+    serializeData(data)
 }
 
 
 // Removing entry of the given dictionary.
 async function removeDictionaryEntry(dictionary, entry) {
-    console.log("entry", entry)
-    console.log("dict", dictionary)
     const fs = require('fs').promises;
     var data = await fs.readFile('./data.json', 'utf8')
     .then(x => JSON.parse(x) || "missing key")
@@ -108,9 +144,6 @@ async function removeDictionaryEntry(dictionary, entry) {
 
 // Editing entry of the given dictionary.
 async function editDictionaryEntry(dictionary, entry, newEntry) {
-    console.log("entry", entry)
-    console.log("newEntry", newEntry)
-    console.log("dict", dictionary)
     const fs = require('fs').promises;
     var data = await fs.readFile('./data.json', 'utf8')
     .then(x => JSON.parse(x) || [])
@@ -129,6 +162,33 @@ async function editDictionaryEntry(dictionary, entry, newEntry) {
     });
 
     return dictionary;
+}
+
+async function addDictionaryEntry(dictionary, newEntry) {
+    var data = await getJsonData();
+
+    var index = data[dictionary].indexOf(newEntry);
+    if (index === -1) { // checking if such entry already exists
+        data[dictionary].push(newEntry);
+        serializeData(data);
+    }
+}
+
+
+async function getJsonData() {
+    const fs = require('fs').promises;
+    return await fs.readFile('./data.json', 'utf8')
+    .then(x => JSON.parse(x) || [])
+    .catch(e => e)
+}
+
+function serializeData(data) {
+    const fs = require('fs').promises;
+    const jsonContent = JSON.stringify(data);
+    fs.writeFile("./data.json", jsonContent, 'utf8', function (err) {
+        if (err)
+            return console.log(err);
+    });
 }
 
 

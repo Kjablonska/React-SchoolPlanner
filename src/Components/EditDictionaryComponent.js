@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link  } from "react-router-dom";
-import EditEntry from './EditEntryComponent';
-
 
 function EditDictionary(props) {
     const [dictionaryList, setDictionaryList] = React.useState([]);
@@ -38,8 +36,7 @@ function EditDictionary(props) {
         getDict()
     }
 
-    const goToEditEntry = (toEditEntry) => {
-        let entry = toEditEntry;
+    const goToEditEntry = (entry) => {
         return { pathname: "editEntry", state: {entry, dictionary}}
     }
 
@@ -47,31 +44,31 @@ function EditDictionary(props) {
     <div>
 
     <div>Dictionary: {dictionary}
-        {/* <form > */}
         <table>
         <tbody>
             {dictionaryList.map(r =>
                 <tr>
-                    <td>
+                    <td key={r}>
                         <input className="input-data" type="text" key={r} value={r} readOnly></input>
                     </td>
                     <td>
                         <div>
-                            <button onClick={() => removeEntry(r, dictionary)}>Remove</button>
+                            <button key="remove" onClick={() => removeEntry(r, dictionary)}>Remove</button>
                         </div>
                     </td>
                     <td>
                         <div>
                             <Link to = {goToEditEntry(r)} className="btn btn-primary">
-                            <button>Edit</button>
+                            <button key="edit">Edit</button>
                             </Link>
                         </div>
                     </td>
                 </tr>)}
         </tbody>
         </table>
-        {/* <input type="submit"></input> */}
-        {/* </form> */}
+        <Link to = {goToEditEntry('')} className="btn btn-primary">
+            <button>Add</button>
+        </Link>
     </div>
     </div>
     )

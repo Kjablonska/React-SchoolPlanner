@@ -27,9 +27,10 @@ function TimeTable(props) {
     const [roomsList, setRooms] = React.useState([]);
     const [activities, setActivities] = React.useState([]);
 
-
     React.useEffect( () => {
-      setSelectedRoom(roomsList[0])
+      console.log(selectedRoom)
+      if (selectedRoom === '' || selectedRoom === undefined)
+        setSelectedRoom(roomsList[0])
     }, [roomsList])
 
     React.useEffect( () => {
@@ -51,13 +52,23 @@ function TimeTable(props) {
           fetchActivities()
     }, [selectedRoom])
 
+    React.useEffect( () => {
+      // When going back from editing activity, we want to stay in the same room.
+      if (props.location['state'] !== undefined && props.location.state['room'] !== undefined) {
+        setSelectedRoom(props.location.state.room);
+        console.log("effect props", selectedRoom);
+      }
+    }, [props])
+
     const changeRoom = (newRoom) => {
       setSelectedRoom(newRoom);
     }
 
     const goToActivityDetails = (row, col) => {
       let room = selectedRoom;
-      return { pathname: "activityDetail", state: {room, row, col}}
+      let slot = row;
+      let day = col;
+      return { pathname: "activityDetail", state: {room, slot, day}}
     }
 
     const generateRoomSelection = () => {
@@ -94,7 +105,7 @@ function TimeTable(props) {
             );
           } else {
             data = "X"
-            for(const [key, value] of Object.entries(activities)) {
+            for(const [, value] of Object.entries(activities)) {
               if (value["slot"] === row && value["day"] === col) {
                 data = value["group"];
               }
@@ -133,6 +144,5 @@ function TimeTable(props) {
     );
 
 }
-
 
 export default TimeTable;
