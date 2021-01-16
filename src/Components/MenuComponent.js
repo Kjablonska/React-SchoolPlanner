@@ -18,6 +18,9 @@ function Menu(props) {
             <NavItem>
                 <NavLink tag={Link} className="text-white" to={{pathname:'/editDictionary', state: {dictionary:'teachers'}}}>Teachers</NavLink>
             </NavItem>
+            <NavItem>
+                <NavLink tag={Link} className="text-white" to={{pathname:'/editDictionary', state: {dictionary:'rooms'}}}>Rooms</NavLink>
+            </NavItem>
         </div>
     )
 }

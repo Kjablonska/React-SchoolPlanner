@@ -26,35 +26,35 @@ function TimeTable(props) {
     const [selectedRoom, setSelectedRoom] = React.useState("");
     const [roomsList, setRooms] = React.useState([]);
     const [activities, setActivities] = React.useState([]);
-    // console.log("props", props)
+
+
+    React.useEffect( () => {
+      setSelectedRoom(roomsList[0])
+    }, [roomsList])
 
     React.useEffect( () => {
       async function fetchRoomsList() {
-        let response = await fetch(`/dictionaryList?dictionary=rooms`)
-        response = await response.json()
-        setRooms(response)
+            let response = await fetch(`/dictionaryList?dictionary=rooms`)
+            response = await response.json()
+            setRooms(response)
       }
 
+      fetchRoomsList()
+    }, [])
+
+    React.useEffect( () => {
       async function fetchActivities() {
-        let response =  await fetch(`/activities?room=${selectedRoom}`)
-        response = await response.json()
-        setActivities(response)
-      }
-
-      fetchRoomsList();
-
-      if (!roomsList.includes(selectedRoom)) {
-        setSelectedRoom(roomsList[0])
-      }
-
-      console.log(selectedRoom)
-      fetchActivities();
+            let response =  await fetch(`/activities?room=${selectedRoom}`)
+            response = await response.json()
+            setActivities(response)
+          }
+          fetchActivities()
     }, [selectedRoom])
-
 
     const changeRoom = (newRoom) => {
       setSelectedRoom(newRoom);
     }
+
     const goToActivityDetails = (row, col) => {
       let room = selectedRoom;
       return { pathname: "activityDetail", state: {room, row, col}}

@@ -1,46 +1,53 @@
 import React from 'react';
+import { Link  } from "react-router-dom";
+import EditEntry from './EditEntryComponent';
+
 
 function EditDictionary(props) {
-    const [dictionaryList, setGrousetDictionary] = React.useState([]);
+    const [dictionaryList, setDictionaryList] = React.useState([]);
+    const [dictionary, setDictionary] = React.useState("");
 
     React.useEffect(() => {
-        async function fetchDictionary() {
-            let response = await fetch(`/dictionaryList?dictionary=${props.location.state.dictionary}`)
-            response = await response.json()
-            setGrousetDictionary(response)
-        }
+        console.log(props)
+        if (props.location['state'] !== undefined && props.location.state['dictionary'] !== undefined)
+            setDictionary(props.location.state.dictionary)
 
-        fetchDictionary();
+        getDict();
+    }, [props])
 
-    }, [props.location.state.dictionary])   // Watched for changes. Ensures re-render when props value changed.
+    React.useEffect(() => {
+        getDict();
+    }, [dictionary])
 
-    const goToTimeTable = () => {
-        console.log(props.location.state.room)
-        let room = props.location.state.room;
-        console.log("det", {room});
-        return { pathname: "/", state: {room}}
+    const getDict = async function() {
+        console.log("getting list");
+        let response = await fetch(`/dictionaryList?dictionary=${dictionary}`)
+        response = await response.json()
+        setDictionaryList(response)
     }
 
-    const removeEntry = (entry) => () => {
-        console.log(entry.r)
-        fetch(`/removeDictionaryEntry?dictionary=${props.location.state.dictionary}&entry=${entry.r}`, {
-            method: 'POST',
+    const removeEntry = async function(entry, dict) {
+        await fetch(`/removeDictionaryEntry`, {
+            method: "POST",
             headers: {
+                'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
+            body: JSON.stringify({ dictionary: `${dict}`, entry: `${entry}`})
         })
+        getDict()
+    }
+
+    const goToEditEntry = (toEditEntry) => {
+        let entry = toEditEntry;
+        return { pathname: "editEntry", state: {entry, dictionary}}
     }
 
     return (
     <div>
-        <div>
-        {dictionaryList.map(r =>
-                <form id={r} method="post" action={`/removeDictionaryEntry?dictionary=${props.location.state.dictionary}&entry=${r}`}></form>
-           )}
-        </div>
 
-    <div>Dictionary: {props.location.state.dictionary}
-        <form action={goToTimeTable}>
+    <div>Dictionary: {dictionary}
+        {/* <form > */}
         <table>
         <tbody>
             {dictionaryList.map(r =>
@@ -50,19 +57,21 @@ function EditDictionary(props) {
                     </td>
                     <td>
                         <div>
-                            <button type="submit" form={r}>Remove</button>
+                            <button onClick={() => removeEntry(r, dictionary)}>Remove</button>
                         </div>
                     </td>
                     <td>
                         <div>
-                            <button type="submit" form={r, r}>Edit</button>
+                            <Link to = {goToEditEntry(r)} className="btn btn-primary">
+                            <button>Edit</button>
+                            </Link>
                         </div>
                     </td>
                 </tr>)}
         </tbody>
         </table>
-        <input type="submit"></input>
-        </form>
+        {/* <input type="submit"></input> */}
+        {/* </form> */}
     </div>
     </div>
     )
