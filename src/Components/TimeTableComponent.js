@@ -1,153 +1,150 @@
 ﻿import React from 'react';
-import { Link  } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
-var columnsHeaders = [
-    "#"
-    ,"Monday"
-    ,"Tuesday"
-    ,"Wednesday"
-    ,"Thursday"
-    ,"Friday"
-  ];
+var columnsHeaders =
+    ['#', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
-  var rowsHeaders = [
-    "8:00-8:45"
-    ,"8:55-9:40"
-    ,"9:50-11:35"
-    ,"11:55-12:40"
-    ,"12:50-13:35"
-    ,"13:45-14:30"
-    ,"14:40-15:25"
-    ,"15:35-16:20"
-    ,"16:30-17:15"
-  ];
+var rowsHeaders = [
+    '8:00-8:45', '8:55-9:40', '9:50-11:35', '11:55-12:40', '12:50-13:35',
+    '13:45-14:30', '14:40-15:25', '15:35-16:20', '16:30-17:15'
+];
 
 function TimeTable(props) {
-    const [selectedRoom, setSelectedRoom] = React.useState("");
+    const [selectedRoom, setSelectedRoom] = React.useState('');
     const [roomsList, setRooms] = React.useState([]);
     const [activities, setActivities] = React.useState([]);
 
-    React.useEffect( () => {
-      console.log(selectedRoom)
-      if (selectedRoom === '' || selectedRoom === undefined)
-        setSelectedRoom(roomsList[0])
+    React.useEffect(() => {
+        console.log(selectedRoom)
+        if (selectedRoom === '' || selectedRoom === undefined)
+            setSelectedRoom(roomsList[0])
 
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [roomsList])
 
-    React.useEffect( () => {
-      async function fetchRoomsList() {
-            let response = await fetch(`/dictionaryList?dictionary=rooms`)
-            response = await response.json()
-            setRooms(response)
-      }
+    React.useEffect(
+        () => {
+            async function fetchRoomsList() {
+                let response = await fetch(`/dictionaryList?dictionary=rooms`)
+                response = await response.json()
+                setRooms(response)
+            }
 
-      fetchRoomsList()
-    }, [])
+            fetchRoomsList()
+        },
+        [])
 
-    React.useEffect( () => {
-      async function fetchActivities() {
-        console.log(selectedRoom)
-            let response =  await fetch(`/activities?room=${selectedRoom}`)
+    React.useEffect(() => {
+        async function fetchActivities() {
+            console.log(selectedRoom)
+            let response = await fetch(`/activities?room=${selectedRoom}`)
             response = await response.json()
             setActivities(response)
-          }
+        }
 
-      if (selectedRoom !== '' || selectedRoom !== undefined) {
-          fetchActivities();
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+        if (selectedRoom !== '' || selectedRoom !== undefined) {
+            fetchActivities();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedRoom])
 
 
-    React.useEffect( () => {
-      // When going back from editing activity, we want to stay in the same room.
-      if (props.location['state'] !== undefined && props.location.state['room'] !== undefined) {
-        setSelectedRoom(props.location.state.room);
-        console.log("effect props", selectedRoom);
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    React.useEffect(() => {
+        // When going back from editing activity, we want to stay in the same room.
+        if (props.location['state'] !== undefined &&
+            props.location.state['room'] !== undefined) {
+            setSelectedRoom(props.location.state.room);
+            console.log('effect props', selectedRoom);
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props])
 
-    const changeRoom = (newRoom) => {
-      setSelectedRoom(newRoom);
-    }
+    const changeRoom =
+        (newRoom) => {
+            setSelectedRoom(newRoom);
+        }
 
-    const goToActivityDetails = (row, col) => {
-      let room = selectedRoom;
-      let slot = row;
-      let day = col;
-      return { pathname: "activityDetail", state: {room, slot, day}}
-    }
+    const goToActivityDetails =
+        (row, col) => {
+            let room = selectedRoom;
+            let slot = row;
+            let day = col;
+            return {
+                pathname: 'activityDetail', state: { room, slot, day }
+            }
+        }
 
-    const generateRoomSelection = () => {
-      return (
-      <select name="select-room" value={selectedRoom} onChange={e => changeRoom(e.target.value)} >
-        {(roomsList).map(r => <option key={r} value={r}>{r}</option>)}
-      </select>
-      )
-    }
+    const generateRoomSelection =
+        () => {
+            return (<div className='select-room'><label><b>Room</b></label>&nbsp;<
+                select value={selectedRoom} onChange=
+                {e => changeRoom(e.target.value)}>{(roomsList).map(
+                    r => <option key={r} value={r}>{r}</option>)}
+            </select>
+            </div>
+            )
+        }
 
     const generateColumns = () => {
-      let columns = [];
-      columnsHeaders.forEach(item => {
-        columns.push(
-          <th>
-            {item}
-          </th>
-        )
-      })
+        let columns = [];
+        columnsHeaders.forEach(item => {
+            columns.push(
+                <th>
+                    {item}
+                </th>)
+        })
 
-      return columns;
+        return columns;
     }
 
     const generateTableData = () => {
-      let rows = [];
-      for (const row of rowsHeaders) {
-        let columns = [];
-        for (const col of columnsHeaders) {
-          var data;
-          if (col === '#') {
-            data = row;
-            columns.push (
-              <td bgcolor="#FDFAEB" className="col td-style">{data}</td>
-            );
-          } else {
-            data = "  "
-            for(const [, value] of Object.entries(activities)) {
-              if (value["slot"] === row && value["day"] === col) {
-                data = value["group"];
-              }
+        let rows = [];
+        for (const row of rowsHeaders) {
+            let columns = [];
+            for (const col of columnsHeaders) {
+                var data;
+                if (col === '#') {
+                    data = row;
+                    columns.push(
+                        <td bgcolor='#FDFAEB' className='col td-style'>{data}</td>
+                    );
+                } else {
+                    data = "  "
+                    for (const [, value] of Object.entries(activities)) {
+                        if (value["slot"] === row && value["day"] === col) {
+                            data = value["group"];
+                        }
+                    }
+
+                    columns.push(
+                        <td className="col td-style">
+                            <Link to={goToActivityDetails(row, col)} className="btn btn-primary">
+                                <button className="table-entry">{data}</button>
+                            </Link>
+                        </td>
+                    );
+                }
             }
-
-            columns.push (
-              <td className="col td-style">
-                  <Link to = {goToActivityDetails(row, col)} className="btn btn-primary">
-                    <button className="table-entry">{data}</button>
-                  </Link>
-              </td>
+            rows.push(
+                <tr className='tr' key={row} className='row'>
+                    {columns}
+                </tr>
             );
-          }
         }
-        rows.push (
-          <tr className="tr" key={row} className="row">
-              {columns}
-          </tr>
-        );
-      }
 
-      return rows;
+        return rows;
     }
 
     return (
         <>
-        <label>Room</label>
-          {generateRoomSelection()}
-            <table className="table table-bordered">
-              <tbody>
-                <tr bgcolor="#FDFAEB">{generateColumns()}</tr>
-                {generateTableData()}
-              </tbody>
+            {generateRoomSelection()}
+            <br></br>
+            <table className='table'>
+                <tbody>
+                    <tr bgcolor='#FDFAEB'>{generateColumns()}</tr>
+                    {generateTableData()}
+                </tbody>
             </table>
         </>
     );

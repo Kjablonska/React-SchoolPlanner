@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link  } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Activity(props) {
     const [groupsList, setGroups] = React.useState([]);
@@ -33,16 +33,17 @@ function Activity(props) {
 
         async function fetchActivityDetail() {
             await fetch(`/activityDetail?room=${props.location.state.room}&slot=${props.location.state.slot}&day=${props.location.state.day}`)
-            .then(response => response.json()).then(response => setActivity(response)).catch(error => {console.log(error)});
+                .then(response => response.json()).then(response => setActivity(response)).catch(error => { console.log(error) });
         }
 
         fetchGroupsList();
         fetchClassesList();
         fetchTeachersList();
         fetchActivityDetail();
-    }, )
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
-    React.useEffect( () => {
+    React.useEffect(() => {
         function setDefault() {
             console.log(activity)
             if (activity !== undefined && activity.length !== 0) {
@@ -63,10 +64,10 @@ function Activity(props) {
 
     const goToTimeTable = () => {
         let room = props.location.state.room;
-        return { pathname: "/", state: {room}}
+        return { pathname: "/", state: { room } }
     }
 
-    const unassign = async() => {
+    const unassign = async () => {
         await fetch(`/unassignEntry`, {
             method: "POST",
             headers: {
@@ -74,7 +75,8 @@ function Activity(props) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(
-                {   room: `${props.location.state.room}`,
+                {
+                    room: `${props.location.state.room}`,
                     day: `${props.location.state.day}`,
                     slot: `${props.location.state.slot}`
                 }
@@ -83,7 +85,7 @@ function Activity(props) {
         console.log("unassigned")
     }
 
-    const saveEntry = async function(event) {
+    const saveEntry = async function (event) {
         event.preventDefault();
         var group = document.getElementById("group").value;
         var clas = document.getElementById("class").value;
@@ -98,84 +100,84 @@ function Activity(props) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(
-                {   room: `${props.location.state.room}`,
+                {
+                    room: `${props.location.state.room}`,
                     slot: `${props.location.state.slot}`,
-                    day:`${props.location.state.day}`,
+                    day: `${props.location.state.day}`,
                     group: `${group}`,
                     class: `${clas}`,
                     teacher: `${teacher}`
                 })
         }).then(() => {
-            props.history.push({pathname: "/", state: {room:props.location.state.room}});
+            props.history.push({ pathname: "/", state: { room: props.location.state.room } });
         });
     }
 
     return (
-        <div>
-            {props.location.state.room}
-        <form onSubmit={saveEntry}>
-        <table>
-            <tr>
-                <td>Room</td>
-                <td>
-                    <input name="room" value = {props.location.state.room} readOnly/>
-                </td>
-            </tr>
-            <tr>
-                <td>Slot</td>
-                <td>
-                    <input name="slot" value = {props.location.state.slot} readOnly/>
-                </td>
-            </tr>
-            <tr>
-                <td>Day</td>
-                <td>
-                    <input name="day" value = {props.location.state.day} readOnly/>
-                </td>
-            </tr>
-            <tr>
-                <td>Group</td>
-                <td>
-                    <select name="group" id="group" value={group} onChange={e => setGroup(e.target.value)}>
-                        {groupsList.map(r =>
-                            <option defaultValue={r}>{r}</option>
-                        )}
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>Class</td>
-                <td>
-                    <select name="class" id="class" value={clas} onChange={e => setClass(e.target.value)}>
-                        {classesList.map(r =>
-                            <option>{r}</option>
-                        )}
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>Teacher</td>
-                <td>
-                    <select name="teacher" id="teacher" value={teacher} onChange={e => setTeacher(e.target.value)}>
-                        {teachersList.map(r =>
-                            <option>{r}</option>
-                        )}
-                    </select>
-                </td>
-            </tr>
-        </table>
-        <button clasName="button1" type="submit">Save</button>
-        </form>
-        <div>
-            <Link to = {goToTimeTable} className="btn btn-primary">
-                <button className="button3">Cancel</button>
-            </Link>
-            {(activity !== undefined && activity.length !== 0) &&
-                <Link to = {goToTimeTable} className="btn btn-primary">
-                    <button className="button5" onClick = {unassign}>Unassign</button>
+        <div className="div-spaces">
+            <form id="entry" onSubmit={saveEntry}>
+                <table>
+                    <tr>
+                        <td>Room</td>
+                        <td>
+                            <input className="input-data" name="room" value={props.location.state.room} readOnly />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Slot</td>
+                        <td>
+                            <input className="input-data" name="slot" value={props.location.state.slot} readOnly />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Day</td>
+                        <td>
+                            <input className="input-data" name="day" value={props.location.state.day} readOnly />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Group</td>
+                        <td>
+                            <select name="group" id="group" value={group} onChange={e => setGroup(e.target.value)}>
+                                {groupsList.map(r =>
+                                    <option defaultValue={r}>{r}</option>
+                                )}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Class</td>
+                        <td>
+                            <select name="class" id="class" value={clas} onChange={e => setClass(e.target.value)}>
+                                {classesList.map(r =>
+                                    <option>{r}</option>
+                                )}
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Teacher</td>
+                        <td>
+                            <select name="teacher" id="teacher" value={teacher} onChange={e => setTeacher(e.target.value)}>
+                                {teachersList.map(r =>
+                                    <option>{r}</option>
+                                )}
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <button className="button1" type="submit">Save</button>
+            </form>
+            <div>
+                <Link to={goToTimeTable} className="btn btn-primary">
+                    <button className="button3">Cancel</button>
                 </Link>
-            }
-        </div>
+                {(activity !== undefined && activity.length !== 0) &&
+                    <Link to={goToTimeTable} className="btn btn-primary">
+                        <button className="button5" onClick={unassign}>Unassign</button>
+                    </Link>
+                }
+            </div>
         </div>
     )
 }

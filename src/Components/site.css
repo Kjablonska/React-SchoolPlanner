@@ -1,25 +1,12 @@
-.navbar-nav{
-    -webkit-flex-direction: row;
-    -ms-flex-direction: row;
-    flex-direction: row;
-}
-
-nav ul {
-    display: flex;
-    justify-content: space-between;
-}
-
 .table {
     table-layout: fixed;
     display: table;
     border-collapse: separate;
     border-spacing: 1px;
-    border: 1px solid black;
-    border-color: gray;
     text-align: center;
     width: 100%;
-    padding-left:5%;
-    padding-right:5%;
+    padding-left: 5%;
+    padding-right: 5%;
 }
 
 .table-entry {
@@ -46,41 +33,79 @@ nav ul {
 }
 
 th {
+    height: 60px;
     border: 1px solid black;
 }
 
 .button1 {
     background-color: rgb(241, 255, 233);
     color: black;
-    border: 2px solid #A1C349; /* Green */
+    border: 2px solid #A1C349;
+    /* Green */
     width: 80px;
-    margin:5px;
+    margin: 5px;
 }
 
 .button2 {
-    background-color: rgb(241, 246, 250); 
+    background-color: rgb(241, 246, 250);
     color: black;
     border: 2px solid #95D9DA;
     width: 80px;
-    margin:5px;
+    margin: 5px;
 }
 
 .button3 {
-    background-color: rgb(255, 242, 242); 
+    background-color: rgb(255, 242, 242);
     color: black;
     border: 2px solid #B98389;
     width: 80px;
-    margin:5px;
+    margin: 5px;
 }
 
 .button5 {
     background-color: rgb(243, 240, 235);
     color: black;
     border: 2px solid #555555;
-    width: 80px;
-    margin:5px;
+    width: 100px;
+    margin: 5px;
 }
 
-/* div button {
-    float: right;
-} */
+.select-room {
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.nav-place {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    display: block;
+    padding: 20px;
+    width: 100%;
+    background-color: #e7e7e7;
+}
+
+
+.nav-link {
+    margin: 20px;
+    width: 100%
+}
+
+.link-style {
+    color: black;
+    text-decoration: none;
+}
+
+.div-spaces {
+    padding-left: 5%;
+    padding-right: 5%
+}
+
+select {
+    width: 140px;
+}
+
+.input-data {
+    border-width: 0px;
+}

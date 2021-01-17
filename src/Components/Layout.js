@@ -1,13 +1,13 @@
 import React from 'react';
 import Menu from './MenuComponent'
 
-const Layout =({children}) =>{
-    return(
+const Layout = ({ children }) => {
+    return (
         <>
-        <div>
-            <Menu/>
-        </div>
-        <main>{children}</main>
+            <div>
+                <Menu />
+            </div>
+            <main>{children}</main>
         </>
     )
 }
