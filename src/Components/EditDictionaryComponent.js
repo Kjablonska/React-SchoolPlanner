@@ -6,22 +6,30 @@ function EditDictionary(props) {
     const [dictionary, setDictionary] = React.useState("");
 
     React.useEffect(() => {
-        console.log(props)
         if (props.location['state'] !== undefined && props.location.state['dictionary'] !== undefined)
             setDictionary(props.location.state.dictionary)
 
         getDict();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props])
 
     React.useEffect(() => {
-        getDict();
+        if (dictionary !== "" && dictionary !== undefined)
+            getDict();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dictionary])
 
-    const getDict = async function() {
-        console.log("getting list");
+    React.useEffect(() => {
+        console.log("dic eff", dictionaryList)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dictionaryList])
+
+    async function getDict() {
         let response = await fetch(`/dictionaryList?dictionary=${dictionary}`)
         response = await response.json()
         setDictionaryList(response)
+
+        console.log("dic list", dictionaryList)
     }
 
     const removeEntry = async function(entry, dict) {
@@ -53,13 +61,13 @@ function EditDictionary(props) {
                     </td>
                     <td>
                         <div>
-                            <button key="remove" onClick={() => removeEntry(r, dictionary)}>Remove</button>
+                            <button className="button3" key="remove" onClick={() => removeEntry(r, dictionary)}>Remove</button>
                         </div>
                     </td>
                     <td>
                         <div>
                             <Link to = {goToEditEntry(r)} className="btn btn-primary">
-                            <button key="edit">Edit</button>
+                            <button className="button1" key="edit">Edit</button>
                             </Link>
                         </div>
                     </td>
@@ -67,7 +75,7 @@ function EditDictionary(props) {
         </tbody>
         </table>
         <Link to = {goToEditEntry('')} className="btn btn-primary">
-            <button>Add</button>
+            <button className="button2">Add</button>
         </Link>
     </div>
     </div>

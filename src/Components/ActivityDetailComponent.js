@@ -57,6 +57,7 @@ function Activity(props) {
         }
 
         setDefault();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activity])
 
 
@@ -163,15 +164,15 @@ function Activity(props) {
                 </td>
             </tr>
         </table>
-        <button type="submit">Save</button>
+        <button clasName="button1" type="submit">Save</button>
         </form>
         <div>
             <Link to = {goToTimeTable} className="btn btn-primary">
-                <button>Cancel</button>
+                <button className="button3">Cancel</button>
             </Link>
             {(activity !== undefined && activity.length !== 0) &&
                 <Link to = {goToTimeTable} className="btn btn-primary">
-                    <button onClick = {unassign}>Unassign</button>
+                    <button className="button5" onClick = {unassign}>Unassign</button>
                 </Link>
             }
         </div>

@@ -1,13 +1,19 @@
-const { time, log } = require('console');
 const express = require('express');
 const app = express(); // create express app
+const path = require('path');
+
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
 
 
 // Parse URL-encoded bodies (as sent by HTML forms)
 app.use(express.urlencoded());
-
-// Parse JSON bodies (as sent by API clients)
 app.use(express.json());
+
 
 app.get('/dictionaryList', async (req, res) => {
     res.json(await getDictionaryData(req.query.dictionary))
@@ -102,7 +108,21 @@ async function saveAcivity(room, slot, day, group, clas, teacher) {
     };
     data["activities"].push(item);
 
+    checkDataCorrectness(data, room, slot, day, group, teacher);
+
     serializeData(data);
+}
+
+
+function checkDataCorrectness(data, room, slot, day, group, teacher) {
+    for (const item of data["activities"]) {
+        if (item.room !== room && item.day === day && item.slot === slot) {
+            if (item.group === group || item.teacher === teacher) {
+                var index = data["activities"].indexOf(item);
+                data["activities"].splice(index, 1);
+            }
+        }
+    }
 }
 
 async function unassignEntry(room, slot, day) {
@@ -124,30 +144,20 @@ async function unassignEntry(room, slot, day) {
 
 // Removing entry of the given dictionary.
 async function removeDictionaryEntry(dictionary, entry) {
-    const fs = require('fs').promises;
-    var data = await fs.readFile('./data.json', 'utf8')
-    .then(x => JSON.parse(x) || "missing key")
-    .catch(e => e)
+    var data = await getJsonData();
 
     var index = data[dictionary].indexOf(entry);
     if (index !== -1)
         data[dictionary].splice(index, 1);
 
-    const jsonContent = JSON.stringify(data);
-    fs.writeFile("./data.json", jsonContent, 'utf8', function (err) {
-        if (err)
-            return console.log(err);
-    });
+    serializeData(data);
 
     return dictionary;
 }
 
 // Editing entry of the given dictionary.
 async function editDictionaryEntry(dictionary, entry, newEntry) {
-    const fs = require('fs').promises;
-    var data = await fs.readFile('./data.json', 'utf8')
-    .then(x => JSON.parse(x) || [])
-    .catch(e => e)
+    var data = await getJsonData();
 
     var index = data[dictionary].indexOf(entry);
     if (index !== -1) {
@@ -155,11 +165,7 @@ async function editDictionaryEntry(dictionary, entry, newEntry) {
         data[dictionary][index] = newEntry;
     }
 
-    const jsonContent = JSON.stringify(data);
-    fs.writeFile("./data.json", jsonContent, 'utf8', function (err) {
-        if (err)
-            return console.log(err);
-    });
+    serializeData(data);
 
     return dictionary;
 }
@@ -190,7 +196,6 @@ function serializeData(data) {
             return console.log(err);
     });
 }
-
 
 
 // start express server on port 5000

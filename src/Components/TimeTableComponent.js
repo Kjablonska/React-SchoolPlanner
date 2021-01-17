@@ -31,6 +31,8 @@ function TimeTable(props) {
       console.log(selectedRoom)
       if (selectedRoom === '' || selectedRoom === undefined)
         setSelectedRoom(roomsList[0])
+
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [roomsList])
 
     React.useEffect( () => {
@@ -45,12 +47,18 @@ function TimeTable(props) {
 
     React.useEffect( () => {
       async function fetchActivities() {
+        console.log(selectedRoom)
             let response =  await fetch(`/activities?room=${selectedRoom}`)
             response = await response.json()
             setActivities(response)
           }
-          fetchActivities()
+
+      if (selectedRoom !== '' || selectedRoom !== undefined) {
+          fetchActivities();
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedRoom])
+
 
     React.useEffect( () => {
       // When going back from editing activity, we want to stay in the same room.
@@ -58,6 +66,7 @@ function TimeTable(props) {
         setSelectedRoom(props.location.state.room);
         console.log("effect props", selectedRoom);
       }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props])
 
     const changeRoom = (newRoom) => {
@@ -101,10 +110,10 @@ function TimeTable(props) {
           if (col === '#') {
             data = row;
             columns.push (
-              <td className="col">{data}</td>
+              <td bgcolor="#FDFAEB" className="col td-style">{data}</td>
             );
           } else {
-            data = "X"
+            data = "  "
             for(const [, value] of Object.entries(activities)) {
               if (value["slot"] === row && value["day"] === col) {
                 data = value["group"];
@@ -112,16 +121,16 @@ function TimeTable(props) {
             }
 
             columns.push (
-              <td key className="col">
+              <td className="col td-style">
                   <Link to = {goToActivityDetails(row, col)} className="btn btn-primary">
-                    <button>{data}</button>
+                    <button className="table-entry">{data}</button>
                   </Link>
               </td>
             );
           }
         }
         rows.push (
-          <tr key={row} className="row">
+          <tr className="tr" key={row} className="row">
               {columns}
           </tr>
         );
@@ -134,9 +143,9 @@ function TimeTable(props) {
         <>
         <label>Room</label>
           {generateRoomSelection()}
-            <table>
+            <table className="table table-bordered">
               <tbody>
-                <tr>{generateColumns()}</tr>
+                <tr bgcolor="#FDFAEB">{generateColumns()}</tr>
                 {generateTableData()}
               </tbody>
             </table>
