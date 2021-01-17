@@ -15,7 +15,6 @@ function TimeTable(props) {
     const [activities, setActivities] = React.useState([]);
 
     React.useEffect(() => {
-        console.log(selectedRoom)
         if (selectedRoom === '' || selectedRoom === undefined)
             setSelectedRoom(roomsList[0])
 
@@ -36,7 +35,6 @@ function TimeTable(props) {
 
     React.useEffect(() => {
         async function fetchActivities() {
-            console.log(selectedRoom)
             let response = await fetch(`/activities?room=${selectedRoom}`)
             response = await response.json()
             setActivities(response)
@@ -54,7 +52,6 @@ function TimeTable(props) {
         if (props.location['state'] !== undefined &&
             props.location.state['room'] !== undefined) {
             setSelectedRoom(props.location.state.room);
-            console.log('effect props', selectedRoom);
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -100,12 +97,12 @@ function TimeTable(props) {
 
     const generateTableData = () => {
         let rows = [];
-        for (const row of rowsHeaders) {
+        for (var row = 0; row < rowsHeaders.length; row++) {
             let columns = [];
             for (const col of columnsHeaders) {
                 var data;
                 if (col === '#') {
-                    data = row;
+                    data = rowsHeaders[row];
                     columns.push(
                         <td bgcolor='#FDFAEB' className='col td-style'>{data}</td>
                     );

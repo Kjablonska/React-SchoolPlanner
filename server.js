@@ -104,7 +104,6 @@ async function getActivityDetail(room, slot, day) {
 
 async function saveAcivity(room, slot, day, group, clas, teacher) {
     var data = await getJsonData();
-
     for (const item of data["activities"]) {
         if (item.room === room && item.day === day && item.slot === slot) {
             var index = data["activities"].indexOf(item);
@@ -121,7 +120,7 @@ async function saveAcivity(room, slot, day, group, clas, teacher) {
         "day": day,
         "group": group,
         "room": room,
-        "slot": slot,
+        "slot": parseInt(slot),
         "teacher": teacher
     };
     data["activities"].push(item);
@@ -144,7 +143,6 @@ function checkDataCorrectness(data, room, slot, day, group, teacher) {
 }
 
 async function unassignEntry(room, slot, day) {
-    console.log(room, slot, day);
     var data = await getJsonData();
 
     for (const item of data["activities"]) {
@@ -161,22 +159,27 @@ async function unassignEntry(room, slot, day) {
 // Removing entry of the given dictionary.
 async function removeDictionaryEntry(dictionary, entry) {
     var data = await getJsonData();
+    console.log("remove", dictionary, entry);
 
     var index = data[dictionary].indexOf(entry);
     if (index !== -1)
         data[dictionary].splice(index, 1);
 
     // Removal of dictionary entry results in removal of connected activities.
-    var value = dictionary.slice(0, -1); // Removing last character of dictionary name.
+    var value = dictionary.slice(0, -1);    // Removing last character of dictionary name to make it singular.
+    if (dictionary === "classes")            // Special case for "classes" dictionary, there is a need to remove last two characters to make it singular.
+        value = value.slice(0, -1);
+
+    console.log(value);
     for (const item of data["activities"]) {
-        if (item[value] === entry)
-            unassignEntry(item.room, item.slot, item.day);
+        if (item[value] === entry) {
+            data["activities"].splice(data["activities"].indexOf(item), 1);
+        }
     }
 
     serializeData(data);
 }
 
-// Editing entry of the given dictionary.
 async function editDictionaryEntry(dictionary, entry, newEntry) {
     var data = await getJsonData();
 
@@ -186,7 +189,12 @@ async function editDictionaryEntry(dictionary, entry, newEntry) {
         data[dictionary][index] = newEntry;
     }
 
+    // Removal of dictionary entry results in removal of connected activities.
     var value = dictionary.slice(0, -1); // Removing last character of dictionary name.
+    if (dictionary === "classes")
+        value = dictionary.slice(0, -1); // Removing last character of dictionary name.
+
+    console.log(value, entry);
     for (const item of data["activities"]) {
         if (item[value] === entry)
             item[value] = newEntry
@@ -201,7 +209,7 @@ async function addDictionaryEntry(dictionary, newEntry) {
     var data = await getJsonData();
 
     var index = data[dictionary].indexOf(newEntry);
-    if (index === -1) { // checking if such entry already exists
+    if (index === -1) {         // Checking if such entry already exists
         data[dictionary].push(newEntry);
         serializeData(data);
     }

@@ -11,6 +11,8 @@ function Activity(props) {
     const [clas, setClass] = React.useState("");
     const [teacher, setTeacher] = React.useState("");
 
+    console.log(props.location.state.slot)
+
 
     React.useEffect(() => {
         async function fetchGroupsList() {
@@ -32,6 +34,7 @@ function Activity(props) {
         }
 
         async function fetchActivityDetail() {
+            console.log(props.location.state.slot);
             await fetch(`/activityDetail?room=${props.location.state.room}&slot=${props.location.state.slot}&day=${props.location.state.day}`)
                 .then(response => response.json()).then(response => setActivity(response)).catch(error => { console.log(error) });
         }
@@ -93,6 +96,7 @@ function Activity(props) {
         console.log("data", group, clas, teacher)
         console.log("save push", group, clas, teacher)
 
+        console.log(props.location.state.slot)
         await fetch(`/saveActivity`, {
             method: "POST",
             headers: {
