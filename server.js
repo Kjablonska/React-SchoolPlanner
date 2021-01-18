@@ -2,6 +2,8 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
+const data_file = './data.json'
+
 // Parse URL-encoded bodies (as sent by HTML forms)
 app.use(express.urlencoded({
     extended: true
@@ -73,21 +75,21 @@ app.post('/unassignEntry', async (req, res) => {
 
 async function getDictionaryData(dictionary) {
     const fs = require('fs').promises;
-    return await fs.readFile('./data.json', 'utf8')
+    return await fs.readFile(data_file, 'utf8')
         .then(x => JSON.parse(x)[dictionary] || [])
         .catch(e => console.log(e))
 }
 
 async function getRoomActivities(roomName) {
     const fs = require('fs').promises;
-    return await fs.readFile('./data.json', 'utf8')
+    return await fs.readFile(data_file, 'utf8')
         .then(x => JSON.parse(x)["activities"].filter(item => item.room.indexOf(roomName) > -1) || [])
         .catch(e => console.log(e))
 }
 
 async function getActivities() {
     const fs = require('fs').promises;
-    return await fs.readFile('./data.json', 'utf8')
+    return await fs.readFile(data_file, 'utf8')
         .then(x => JSON.parse(x)["activities"])
         .catch(e => console.log(e))
 }
@@ -212,7 +214,7 @@ async function addDictionaryEntry(dictionary, newEntry) {
 
 async function getJsonData() {
     const fs = require('fs').promises;
-    return await fs.readFile('./data.json', 'utf8')
+    return await fs.readFile(data_file, 'utf8')
         .then(x => JSON.parse(x) || [])
         .catch(e => console.log(e))
 }
