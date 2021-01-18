@@ -1,5 +1,5 @@
 const express = require('express');
-const app = express(); // create express app
+const app = express();
 const path = require('path');
 
 // Parse URL-encoded bodies (as sent by HTML forms)
@@ -43,7 +43,7 @@ app.post('/removeDictionaryEntry', (req, res) => {
 })
 
 app.post('/editDictionaryEntry', (req, res) => {
-    if (Object.keys(req.query).length === 0 || req.body.dictionary === '' || req.body.dictionary === undefined || req.body.entry === '' || req.body.entry === undefined || req.body.newEntry === '' || req.body.newEntry === undefined)
+    if (Object.keys(req.body).length === 0 || req.body.dictionary === '' || req.body.dictionary === undefined || req.body.entry === '' || req.body.entry === undefined || req.body.newEntry === '' || req.body.newEntry === undefined)
         res.json("Missing paramters")
     else
         res.json(editDictionaryEntry(req.body.dictionary, req.body.entry, req.body.newEntry));
@@ -95,7 +95,7 @@ async function getActivities() {
 async function getActivityDetail(room, slot, day) {
     const act = await getActivities();
     for (const item of act) {
-        if (item.room === room && item.day === day && item.slot === slot) {
+        if (item.room === room && item.day === day && item.slot == slot) {
             return item;
         }
     }
@@ -105,7 +105,7 @@ async function getActivityDetail(room, slot, day) {
 async function saveAcivity(room, slot, day, group, clas, teacher) {
     var data = await getJsonData();
     for (const item of data["activities"]) {
-        if (item.room === room && item.day === day && item.slot === slot) {
+        if (item.room === room && item.day === day && item.slot == slot) {
             var index = data["activities"].indexOf(item);
             data["activities"][index].group = group;
             data["activities"][index].class = clas;
@@ -133,7 +133,7 @@ async function saveAcivity(room, slot, day, group, clas, teacher) {
 
 function checkDataCorrectness(data, room, slot, day, group, teacher) {
     for (const item of data["activities"]) {
-        if (item.room !== room && item.day === day && item.slot === slot) {
+        if (item.room !== room && item.day === day && item.slot == slot) {
             if (item.group === group || item.teacher === teacher) {
                 var index = data["activities"].indexOf(item);
                 data["activities"].splice(index, 1);
@@ -146,7 +146,7 @@ async function unassignEntry(room, slot, day) {
     var data = await getJsonData();
 
     for (const item of data["activities"]) {
-        if (item.room === room && item.day === day && item.slot === slot) {
+        if (item.room === room && item.day === day && item.slot == slot) {
             var index = data["activities"].indexOf(item);
             data["activities"].splice(index, 1);
             break;
@@ -159,7 +159,7 @@ async function unassignEntry(room, slot, day) {
 // Removing entry of the given dictionary.
 async function removeDictionaryEntry(dictionary, entry) {
     var data = await getJsonData();
-    console.log("remove", dictionary, entry);
+    console.log("Edit dictionary entry", dictionary, entry);
 
     var index = data[dictionary].indexOf(entry);
     if (index !== -1)
@@ -170,7 +170,6 @@ async function removeDictionaryEntry(dictionary, entry) {
     if (dictionary === "classes")            // Special case for "classes" dictionary, there is a need to remove last two characters to make it singular.
         value = value.slice(0, -1);
 
-    console.log(value);
     for (const item of data["activities"]) {
         if (item[value] === entry) {
             data["activities"].splice(data["activities"].indexOf(item), 1);
@@ -181,28 +180,24 @@ async function removeDictionaryEntry(dictionary, entry) {
 }
 
 async function editDictionaryEntry(dictionary, entry, newEntry) {
+    console.log("Edit dictionary entry", dictionary, entry, newEntry);
     var data = await getJsonData();
 
     var index = data[dictionary].indexOf(entry);
-    if (index !== -1) {
-        console.log("data", data[dictionary][index])
+    if (index !== -1)
         data[dictionary][index] = newEntry;
-    }
 
     // Removal of dictionary entry results in removal of connected activities.
     var value = dictionary.slice(0, -1); // Removing last character of dictionary name.
     if (dictionary === "classes")
         value = dictionary.slice(0, -1); // Removing last character of dictionary name.
 
-    console.log(value, entry);
     for (const item of data["activities"]) {
         if (item[value] === entry)
             item[value] = newEntry
     }
 
     serializeData(data);
-
-    return dictionary;
 }
 
 async function addDictionaryEntry(dictionary, newEntry) {

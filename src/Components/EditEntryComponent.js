@@ -53,13 +53,11 @@ function EditEntry(props) {
             <form onSubmit={saveEntry}>
                 <br></br>
                 <input type="text" id="entry" defaultValue={props.location.state.entry}></input>
-                {/* <Link to = {cancelEdit} className="btn btn-primary"> */}
-                <button type="submit">Save</button>
-                {/* </Link> */}
+                <button className="button1" type="submit">Save</button>
             </form>
             <div>
                 <Link to={cancelEdit} className="btn btn-primary">
-                    <button>Cancel</button>
+                    <button className="button5" >Cancel</button>
                 </Link>
             </div>
         </div>

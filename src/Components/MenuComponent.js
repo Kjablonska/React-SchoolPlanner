@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import { NavLink, Nav } from 'reactstrap';
-import './site.css'
+import './../index.css'
 
 function Menu() {
 
