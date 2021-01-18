@@ -11,9 +11,6 @@ function Activity(props) {
     const [clas, setClass] = React.useState("");
     const [teacher, setTeacher] = React.useState("");
 
-    console.log(props.location.state.slot)
-
-
     React.useEffect(() => {
         async function fetchGroupsList() {
             let response = await fetch(`/dictionaryList?dictionary=groups`)
@@ -144,7 +141,7 @@ function Activity(props) {
                         <td>
                             <select name="group" id="group" value={group} onChange={e => setGroup(e.target.value)}>
                                 {groupsList.map(r =>
-                                    <option defaultValue={r}>{r}</option>
+                                    <option key={r} defaultValue={r}>{r}</option>
                                 )}
                             </select>
                         </td>
@@ -154,7 +151,7 @@ function Activity(props) {
                         <td>
                             <select name="class" id="class" value={clas} onChange={e => setClass(e.target.value)}>
                                 {classesList.map(r =>
-                                    <option>{r}</option>
+                                    <option key={r} defaultValue={r}>{r}</option>
                                 )}
                             </select>
                         </td>
@@ -164,7 +161,7 @@ function Activity(props) {
                         <td>
                             <select name="teacher" id="teacher" value={teacher} onChange={e => setTeacher(e.target.value)}>
                                 {teachersList.map(r =>
-                                    <option>{r}</option>
+                                    <option key={r} defaultValue={r}>{r}</option>
                                 )}
                             </select>
                         </td>
