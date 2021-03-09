@@ -1,7 +1,7 @@
 # School Planner appliaction using React and Node.js 
 **Project done for EGUI course at Warsaw University of Technology.**
 
-**Description:**
+**Description:**</br>
 The aim of the project was to create school time table. 
 Main view contains a table with time slots and information about the class written in the table entry. 
 Clicking on the entry triggers redirection to another page showing details of the selected entry - teacher, group, class, day and slot and allowing for data entry edition. 
