@@ -22,10 +22,10 @@ npm install; npm run build; node server.js
 
 
 **Main view**
-![alt text](https://github.com/Kjablonska/React-SchoolPlanner/blob/main/assets/main-view.png?raw=true)
-</br>
-**Activity view**
-![alt text](https://github.com/Kjablonska/React-SchoolPlanner/blob/main/assets/activity-view.png?raw=true)
-</br>
-**Dictionary view**
+![alt text](https://github.com/Kjablonska/React-SchoolPlanner/blob/main/assets/main-view.png?raw=true)  
+
+**Activity view**  
+![alt text](https://github.com/Kjablonska/React-SchoolPlanner/blob/main/assets/activity-view.png?raw=true)  
+
+**Dictionary view**  
 ![alt text](https://github.com/Kjablonska/React-SchoolPlanner/blob/main/assets/dictionary-view.png?raw=true)
