@@ -16,3 +16,16 @@ Changes in dictionaries results in changing the related fileds in activities.
 **To build&run:**
 npm install; npm run build; node server.js
 
+# Demo
+
+![alt text](https://github.com/Kjablonska/React-SchoolPlanner/blob/main/assets/school-planner.gif?raw=true)
+
+
+**Main view**
+![alt text](https://github.com/Kjablonska/React-SchoolPlanner/blob/main/assets/main-view.png?raw=true)
+
+**Activity view**
+![alt text](https://github.com/Kjablonska/React-SchoolPlanner/blob/main/assets/activity-view.png?raw=true)
+
+**Dictionary view**
+![alt text](https://github.com/Kjablonska/React-SchoolPlanner/blob/main/assets/dictionary-view.png?raw=true)
