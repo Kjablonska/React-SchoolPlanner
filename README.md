@@ -17,7 +17,9 @@ The aim of the project was to create school time table using React and Node.js.
 * The data is being stored in data.json file using Express server.
 
 ## To build&run  
+```sh
 npm install; npm run build; node server.js
+```
 
 # Demo
 
